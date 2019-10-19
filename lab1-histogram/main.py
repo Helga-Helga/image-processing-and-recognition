@@ -8,6 +8,7 @@ from numpy import (
     arange,
     dot,
     round,
+    zeros,
 )
 
 
@@ -18,6 +19,14 @@ def rgb2gray(rgb_image):
 
 
 input_image = rgb2gray(mpimg.imread("original_image.jpg"))
+
+
+def calculate_histogram(image):
+    histogram = zeros(256)
+    for i in range(image.shape[0]):
+        for j in range(image.shape[1]):
+            histogram[image[i, j]] += 1
+    return histogram
 
 
 fig = plt.figure(constrained_layout=True)
@@ -42,8 +51,9 @@ ax_otsus_binarization.imshow(input_image, cmap=plt.get_cmap('gray'))
 
 ax_histogram = fig.add_subplot(spec[1, :])
 ax_histogram.set_title('Histogram')
-vertical_line = plt.axvline(x=0)
+vertical_line = plt.axvline(x=0, color="red")
 ax_histogram.set_xlim([0, 255])
+plt.bar(arange(256), calculate_histogram(input_image))
 ax_histogram.xaxis.set_minor_locator(AutoMinorLocator(50))
 
 ax_slider = fig.add_subplot(spec[2, :])
