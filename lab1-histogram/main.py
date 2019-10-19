@@ -31,6 +31,11 @@ def calculate_histogram(image):
     return histogram
 
 
+input_image = rgb2gray(mpimg.imread('original_image.jpg'))
+histogram = calculate_histogram(input_image)
+
+
+def threshold_binarization(image, threshold):
     binarized_image = image.copy()
     for i in range(binarized_image.shape[0]):
         for j in range(binarized_image.shape[1]):
@@ -50,9 +55,6 @@ ax_original_image = fig.add_subplot(spec[0, 0])
 ax_original_image.set_title('Original image')
 ax_original_image.imshow(input_image, cmap=plt.get_cmap('gray'))
 
-ax_histogram_binarization = fig.add_subplot(spec[0, 1])
-ax_histogram_binarization.set_title('Histogram binarization')
-
 ax_otsus_binarization = fig.add_subplot(spec[0, 2])
 ax_otsus_binarization.set_title('Otsu\'s binarization')
 otsus_threshold = get_optimal_threshold(histogram)
@@ -62,23 +64,30 @@ ax_otsus_binarization.imshow(
     cmap=plt.get_cmap('gray')
 )
 
+ax_threshold_binarization = fig.add_subplot(spec[0, 1])
+ax_threshold_binarization.set_title('Threshold binarization')
+ax_threshold_binarization.imshow(
+    threshold_binarization(input_image, otsus_threshold),
+    cmap=plt.get_cmap('gray')
+)
 
 ax_histogram = fig.add_subplot(spec[1, :])
 ax_histogram.set_title('Histogram')
-vertical_line = plt.axvline(x=0, color="red")
+vertical_line = plt.axvline(x=otsus_threshold, color='red')
 ax_histogram.set_xlim([0, 255])
-plt.bar(arange(256), calculate_histogram(input_image))
+plt.bar(arange(256), histogram, color='black')
 ax_histogram.xaxis.set_minor_locator(AutoMinorLocator(50))
 
 ax_slider = fig.add_subplot(spec[2, :])
-slider = Slider(ax_slider, 'Threshold', 0, 255, valinit=0, valfmt='%0.0f')
+slider = Slider(ax_slider, 'Threshold', 0, 255, valinit=otsus_threshold,
+                valfmt='%0.0f', color='black')
 
 
 def update(val):
     current_threshold = int(slider.val)
     vertical_line.set_xdata(current_threshold)
-    ax_histogram_binarization.imshow(
-        histogram_binarization(input_image, current_threshold),
+    ax_threshold_binarization.imshow(
+        threshold_binarization(input_image, current_threshold),
         cmap=plt.get_cmap('gray')
     )
 
@@ -86,7 +95,7 @@ def update(val):
 slider.on_changed(update)
 
 for ax in [ax_original_image,
-           ax_histogram_binarization,
+           ax_threshold_binarization,
            ax_otsus_binarization,
            ax_slider]:
     ax.set_axis_off()
