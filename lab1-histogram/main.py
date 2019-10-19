@@ -11,6 +11,7 @@ from numpy import (
     zeros,
 )
 
+from otsus_binarization import get_optimal_threshold
 
 
 def rgb2gray(image):
@@ -30,7 +31,6 @@ def calculate_histogram(image):
     return histogram
 
 
-def histogram_binarization(image, threshold):
     binarized_image = image.copy()
     for i in range(binarized_image.shape[0]):
         for j in range(binarized_image.shape[1]):
@@ -55,7 +55,13 @@ ax_histogram_binarization.set_title('Histogram binarization')
 
 ax_otsus_binarization = fig.add_subplot(spec[0, 2])
 ax_otsus_binarization.set_title('Otsu\'s binarization')
-ax_otsus_binarization.imshow(input_image, cmap=plt.get_cmap('gray'))
+otsus_threshold = get_optimal_threshold(histogram)
+print("Optimal threshold using Otsu's algorihms:", otsus_threshold)
+ax_otsus_binarization.imshow(
+    threshold_binarization(input_image, otsus_threshold),
+    cmap=plt.get_cmap('gray')
+)
+
 
 ax_histogram = fig.add_subplot(spec[1, :])
 ax_histogram.set_title('Histogram')
