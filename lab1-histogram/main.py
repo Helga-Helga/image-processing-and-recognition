@@ -4,8 +4,21 @@ import matplotlib.gridspec as gridspec
 import matplotlib.image as mpimg
 from matplotlib.widgets import Slider
 from matplotlib.ticker import AutoMinorLocator
+from numpy import (
+    arange,
+    dot,
+    round,
+)
 
-input_image = mpimg.imread("original_image.jpg")
+
+def rgb2gray(rgb_image):
+    return dot(
+        rgb_image[..., :3], [0.2989, 0.5870, 0.1140]
+    ).round().astype(int)
+
+
+input_image = rgb2gray(mpimg.imread("original_image.jpg"))
+
 
 fig = plt.figure(constrained_layout=True)
 widths = [2, 2, 2]
@@ -17,15 +30,15 @@ gs = fig.add_gridspec(3, 3)
 
 ax_original_image = fig.add_subplot(spec[0, 0])
 ax_original_image.set_title('Original image')
-ax_original_image.imshow(input_image)
+ax_original_image.imshow(input_image, cmap=plt.get_cmap('gray'))
 
 ax_histogram_binarization = fig.add_subplot(spec[0, 1])
 ax_histogram_binarization.set_title('Histogram binarization')
-ax_histogram_binarization.imshow(input_image)
+ax_original_image.imshow(input_image, cmap=plt.get_cmap('gray'))
 
 ax_otsus_binarization = fig.add_subplot(spec[0, 2])
 ax_otsus_binarization.set_title('Otsu\'s binarization')
-ax_otsus_binarization.imshow(input_image)
+ax_otsus_binarization.imshow(input_image, cmap=plt.get_cmap('gray'))
 
 ax_histogram = fig.add_subplot(spec[1, :])
 ax_histogram.set_title('Histogram')
