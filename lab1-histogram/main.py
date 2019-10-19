@@ -12,13 +12,14 @@ from numpy import (
 )
 
 
-def rgb2gray(rgb_image):
-    return dot(
-        rgb_image[..., :3], [0.2989, 0.5870, 0.1140]
-    ).round().astype(int)
 
-
-input_image = rgb2gray(mpimg.imread("original_image.jpg"))
+def rgb2gray(image):
+    if len(image.shape) > 2:
+        return dot(
+            image[..., :3], [0.2989, 0.5870, 0.1140]
+        ).round().astype(int)
+    else:
+        return image
 
 
 def calculate_histogram(image):
