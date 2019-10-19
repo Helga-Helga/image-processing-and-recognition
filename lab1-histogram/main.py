@@ -1,3 +1,5 @@
+import os
+import sys
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
@@ -31,7 +33,15 @@ def calculate_histogram(image):
     return histogram
 
 
-input_image = rgb2gray(mpimg.imread('original_image.jpg'))
+if len(sys.argv) > 1:
+    image_path = sys.argv[1]
+    if os.path.exists(image_path):
+        input_image = rgb2gray(mpimg.imread(image_path))
+    else:
+        raise Exception('Bad image path')
+else:
+    raise Exception('Usage: python main.py image_path')
+
 histogram = calculate_histogram(input_image)
 
 
