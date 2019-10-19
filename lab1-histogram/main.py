@@ -29,6 +29,14 @@ def calculate_histogram(image):
     return histogram
 
 
+def histogram_binarization(image, threshold):
+    binarized_image = image.copy()
+    for i in range(binarized_image.shape[0]):
+        for j in range(binarized_image.shape[1]):
+            binarized_image[i][j] = int(binarized_image[i][j] >= threshold)
+    return binarized_image
+
+
 fig = plt.figure(constrained_layout=True)
 widths = [2, 2, 2]
 heights = [2, 4, 0.25]
@@ -43,7 +51,6 @@ ax_original_image.imshow(input_image, cmap=plt.get_cmap('gray'))
 
 ax_histogram_binarization = fig.add_subplot(spec[0, 1])
 ax_histogram_binarization.set_title('Histogram binarization')
-ax_original_image.imshow(input_image, cmap=plt.get_cmap('gray'))
 
 ax_otsus_binarization = fig.add_subplot(spec[0, 2])
 ax_otsus_binarization.set_title('Otsu\'s binarization')
@@ -61,8 +68,12 @@ slider = Slider(ax_slider, 'Threshold', 0, 255, valinit=0, valfmt='%0.0f')
 
 
 def update(val):
-    current_threshrold = int(slider.val)
-    vertical_line.set_xdata(current_threshrold)
+    current_threshold = int(slider.val)
+    vertical_line.set_xdata(current_threshold)
+    ax_histogram_binarization.imshow(
+        histogram_binarization(input_image, current_threshold),
+        cmap=plt.get_cmap('gray')
+    )
 
 
 slider.on_changed(update)
