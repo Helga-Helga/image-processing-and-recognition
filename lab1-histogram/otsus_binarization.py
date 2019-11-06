@@ -36,15 +36,6 @@ def get_mean_group_values(intensity_probabilities, total_group_probabilities):
     return mu1, mu2
 
 
-def get_total_internal_dispersions(total_group_probabilities, sigma1, sigma2):
-    total_internal_dispersions = zeros(256)
-    for threshold in range(256):
-        total_internal_dispersions[threshold] = \
-            total_group_probabilities[threshold] * sigma1[threshold] + \
-            (1 - total_group_probabilities[threshold] * sigma2[threshold])
-    return total_internal_dispersions
-
-
 def get_intergroup_dispersions(total_group_probabilities, mu1, mu2):
     intergroup_dispersions = zeros(256)
     for threshold in range(256):
