@@ -8,29 +8,15 @@ from matplotlib.widgets import Slider
 from matplotlib.ticker import AutoMinorLocator
 from numpy import (
     arange,
-    dot,
     round,
-    zeros,
 )
 
+from utils import (
+    rgb2gray,
+    calculate_histogram,
+    threshold_binarization,
+)
 from otsus_binarization import get_optimal_threshold
-
-
-def rgb2gray(image):
-    if len(image.shape) > 2:
-        return dot(
-            image[..., :3], [0.2989, 0.5870, 0.1140]
-        ).round().astype(int)
-    else:
-        return image
-
-
-def calculate_histogram(image):
-    histogram = zeros(256)
-    for i in range(image.shape[0]):
-        for j in range(image.shape[1]):
-            histogram[image[i, j]] += 1
-    return histogram
 
 
 if len(sys.argv) > 1:
@@ -45,21 +31,11 @@ else:
 histogram = calculate_histogram(input_image)
 
 
-def threshold_binarization(image, threshold):
-    binarized_image = image.copy()
-    for i in range(binarized_image.shape[0]):
-        for j in range(binarized_image.shape[1]):
-            binarized_image[i][j] = int(binarized_image[i][j] >= threshold)
-    return binarized_image
-
-
-fig = plt.figure(constrained_layout=True)
+fig = plt.figure()
 widths = [2, 2, 2]
 heights = [2, 4, 0.25]
 spec = fig.add_gridspec(ncols=3, nrows=3,
                         width_ratios=widths, height_ratios=heights)
-
-gs = fig.add_gridspec(3, 3)
 
 ax_original_image = fig.add_subplot(spec[0, 0])
 ax_original_image.set_title('Original image')
