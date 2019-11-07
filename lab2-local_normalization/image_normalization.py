@@ -6,7 +6,7 @@ from integral_image import (
 )
 
 
-def normalize_image(image, grid_size, new_mean, new_dispersion):
+def normalize_image(image, integral_image, grid_size, new_mean, new_dispersion):
     """Local brightness normalizaiton of rectangular blocks of image
     by new mean and dispersion values using image integral representation
 
@@ -14,6 +14,8 @@ def normalize_image(image, grid_size, new_mean, new_dispersion):
     ----------
     image : numpy 2d array
         Input image
+    integral_image: numpy 2d array
+        Integral representation of image
     grid_size: int
         Size in pixels of rectangle (currently square)
     new_mean:
@@ -27,15 +29,9 @@ def normalize_image(image, grid_size, new_mean, new_dispersion):
         Normalized image
     """
     normalized_image = image.copy()
-    integral_image = compute_integral_image(image)
     height, width = image.shape
     for i in range(0, height, grid_size):
-        # draw horizontal lines
-        plt.axhline(y=i, color='red')
         for j in range(0, width, grid_size):
-            # draw vertical lines
-            plt.axvline(x=j, color='red')
-
             window = [j, i, grid_size, grid_size]
             mean = window_sum(integral_image, window) / pow(grid_size, 2)
             dispersion = sum(

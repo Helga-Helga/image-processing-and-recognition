@@ -31,7 +31,7 @@ def compute_integral_image(image):
     return integral_image
 
 
-def window_sum(integral_image, window, mean=0):
+def window_sum(integral_image, window):
     """Compute sum of intensities in given window using integral representation
 
     Parameters
