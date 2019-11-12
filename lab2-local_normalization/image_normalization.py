@@ -8,7 +8,7 @@ from integral_image import (
 
 
 def normalize_image(image, integral_image, integral_image_square,
-                    grid_size, new_mean, new_dispersion):
+                    grid_size_h, grid_size_v, new_mean, new_dispersion):
     """Local brightness normalizaiton of rectangular blocks of image
     by new mean and dispersion values using image integral representation
 
@@ -34,16 +34,17 @@ def normalize_image(image, integral_image, integral_image_square,
     """
     normalized_image = image.copy()
     height, width = image.shape
-    for i in range(0, height, grid_size):
-        for j in range(0, width, grid_size):
-            window = [j, i, grid_size, grid_size]
-            mean = window_sum(integral_image, window) / (grid_size ** 2)
+    for i in range(0, height, grid_size_v):
+        for j in range(0, width, grid_size_h):
+            window = [j, i, grid_size_h, grid_size_v]
+            mean = window_sum(
+                integral_image, window) / (grid_size_h * grid_size_v)
             square_mean = window_sum(
-                integral_image_square, window) / (grid_size ** 2)
+                integral_image_square, window) / (grid_size_h * grid_size_v)
             dispersion = square_mean - (mean ** 2)
 
-            for pixel_i in range(i, i + grid_size):
-                for pixel_j in range(j, j + grid_size):
+            for pixel_i in range(i, i + grid_size_v):
+                for pixel_j in range(j, j + grid_size_h):
                     if dispersion == 0.0:
                         normalized_image[pixel_i, pixel_j] = new_mean
                     else:

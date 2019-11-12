@@ -9,10 +9,6 @@ from matplotlib.widgets import Button
 sys.path.insert(1, '../lab1-histogram')
 from utils import rgb2gray
 from image_normalization import normalize_image
-from utils2 import (
-    get_factors,
-    get_lists_intersection,
-)
 from integral_image import compute_integral_image
 
 if len(sys.argv) > 1:
@@ -37,7 +33,7 @@ ax_normalized_image.set_title('Normalized image')
 integral_image = compute_integral_image(input_image)
 integral_image_square = compute_integral_image(input_image, 2)
 normalized_image = normalize_image(
-    input_image, integral_image, integral_image_square, 100, 200, 100)
+    input_image, integral_image, integral_image_square, 100, 100, 200, 100)
 ax_normalized_image.imshow(normalized_image, cmap=plt.get_cmap('gray'))
 
 for ax in [ax_original_image, ax_normalized_image]:
