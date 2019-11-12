@@ -1,34 +1,22 @@
 from numpy import zeros
 
 
-def compute_integral_image(image):
+def compute_integral_image(image, power=1):
     """Image integral representation computing
 
     Parameters
     ----------
     image : numpy 2d array
         Input image
+    power: int
+        Power of intensities to sum
 
     Returns
     -------
     numpy 2d array
         Integral representation of image
     """
-    height, width = image.shape
-    integral_image = zeros((height, width))
-
-    for i in range(height):
-        for j in range(width):
-            sum_in_line = zeros(width)
-            sum_in_line[j] = image[i, j]
-            if j > 0:
-                sum_in_line[j] += sum_in_line[j - 1]
-
-            integral_image[i, j] = sum_in_line[j]
-            if i > 0:
-                integral_image[i, j] += integral_image[i - 1, j]
-
-    return integral_image
+    return (image ** power).cumsum(axis=0).cumsum(axis=1)
 
 
 def window_sum(integral_image, window):

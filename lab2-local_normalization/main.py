@@ -13,6 +13,7 @@ from utils2 import (
     get_factors,
     get_lists_intersection,
 )
+from integral_image import compute_integral_image
 
 if len(sys.argv) > 1:
     image_path = sys.argv[1]
@@ -24,7 +25,7 @@ else:
     raise Exception('Usage: python main.py image_path')
 
 fig = plt.figure()
-spec = fig.add_gridspec(ncols=3, nrows=1)
+spec = fig.add_gridspec(ncols=2, nrows=1)
 
 ax_original_image = fig.add_subplot(spec[0, 0])
 ax_original_image.set_title('Original image')
@@ -32,7 +33,11 @@ ax_original_image.imshow(input_image, cmap=plt.get_cmap('gray'))
 
 ax_normalized_image = fig.add_subplot(spec[0, 1])
 ax_normalized_image.set_title('Normalized image')
-normalized_image = normalize_image(input_image, 500, 128, 1000)
+
+integral_image = compute_integral_image(input_image)
+integral_image_square = compute_integral_image(input_image, 2)
+normalized_image = normalize_image(
+    input_image, integral_image, integral_image_square, 100, 200, 100)
 ax_normalized_image.imshow(normalized_image, cmap=plt.get_cmap('gray'))
 
 for ax in [ax_original_image, ax_normalized_image]:
