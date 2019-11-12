@@ -9,6 +9,9 @@ verify_ssl = true
 matplotlib = "*"
 numpy = "*"
 pillow = "*"
+ipykernel = "*"
+jupyter = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.6"
