@@ -6,6 +6,7 @@
 * [Technologies](#technologies)
 * [Launch](#launch)
 * [Example of the result](#example-of-result)
+* [Algorithm description](#algorithm-description)
 
 ## General info
 
@@ -40,4 +41,27 @@ from activated pipenv environment.
 
 The left image is the original one.
 The right image is normalized with the given parameters,
-that can be choosen manually using sliders (result will be updated itself).
+that can be chosen manually using sliders (the result will be updated itself).
+
+## Algorithm description
+
+Split the image into a rectangular grid.
+
+For each rectangle calculate mean and dispersion using
+integral data representation of the image
+
+![Mean and dispersion](images/mu_sigma.png)
+
+where
+* `I(t)` is intensity in pixel `t`
+* `T` is a rectangular area of the image
+
+For each rectangle the function of pixel intensities of image `I(t)` with
+mean intensity `𝜇` and dispersion `σ` is changed into a function,
+that gives mean intensity `𝜇*` and dispersion `σ*`
+
+![Normalized intensity](images/new_intensity.png)
+
+To ensure that the edges of rectangles are not too noticeable,
+it is needed to intersect rectangles instead of using a grid.
+In areas of intersection chose an average value of normalized intensities.
