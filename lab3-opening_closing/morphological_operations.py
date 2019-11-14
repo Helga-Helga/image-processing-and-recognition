@@ -1,6 +1,29 @@
 from numpy import concatenate, zeros
 
 
+def get_filter_indexes(height, width):
+    """Calculate indexes that are needed to add
+    to image pixel coordinates around center pixel of the filter
+
+    Parameters
+    ----------
+    height : int
+        Filter height
+    width: int
+        Filter width
+
+    Returns
+    -------
+    numpy 2d array
+        Indexes in filter as signed distances from the center of filter
+    """
+    indexes = zeros((height, width, 2))
+    for i in range(height):
+        for j in range(width):
+            indexes[i][j] = (i - height // 2, j - width // 2)
+    return indexes
+
+
 def dilation(image, structural_element):
     """Binary image dilation
 
@@ -21,11 +44,7 @@ def dilation(image, structural_element):
     # get center pixel intensity of structural element
     center_pixel = structural_element[height // 2, width // 2]
 
-    indexes = zeros((height, width, 2))
-    for i in range(height):
-        for j in range(width):
-            indexes[i][j] = (i - height // 2, j - width // 2)
-    print(indexes)
+    indexes = get_filter_indexes(height, width)
 
     # add white borders
     dilated_image = concatenate(
