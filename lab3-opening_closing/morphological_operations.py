@@ -135,3 +135,39 @@ def erosion(image, structural_element):
             if number_of_errors > 0:
                 erosed_image[i, j] = 1 - center_pixel
     return erosed_image
+
+
+def closing(image, structural_element):
+    """Binary image closing
+
+    Parameters
+    ----------
+    image : numpy 2d array
+        Input binary image
+    structural_element: numpy 2d array
+        Binary filter with odd side sizes
+
+    Returns
+    -------
+    numpy 2d array
+        Closed image by structural element as dilation and then erosion
+    """
+    return erosion((dilation(image, structural_element)), structural_element)
+
+
+def opening(image, structural_element):
+    """Binary image opening
+
+    Parameters
+    ----------
+    image : numpy 2d array
+        Input binary image
+    structural_element: numpy 2d array
+        Binary filter with odd side sizes
+
+    Returns
+    -------
+    numpy 2d array
+        Opened image by structural element as erosion and then dilation
+    """
+    return dilation((erosion(image, structural_element)), structural_element)
