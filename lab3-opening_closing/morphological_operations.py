@@ -1,4 +1,8 @@
-from numpy import concatenate, zeros
+from numpy import (
+    concatenate,
+    zeros,
+    delete,
+)
 
 
 def get_filter_indexes(height, width):
@@ -45,7 +49,7 @@ def expand_image(image, height, width):
         ([[1] * image.shape[1]] * width, image), axis=0)
     expanded_image = concatenate(
         (expanded_image, [[1] * image.shape[1]] * width), axis=0)
-    dilated_expanded_imageimage = concatenate(
+    expanded_image = concatenate(
         ([[1] * height] * expanded_image.shape[0], expanded_image),
         axis=1)
     expanded_image = concatenate(
@@ -171,3 +175,29 @@ def opening(image, structural_element):
         Opened image by structural element as erosion and then dilation
     """
     return dilation((erosion(image, structural_element)), structural_element)
+
+def get_edges(image, structural_element):
+    """Get edges of image
+
+    Parameters
+    ----------
+    image: numpy 2d array
+        Input binary image
+    structural_element: numpy 2d array
+        Binary filter with odd side sizes
+
+    Returns
+    -------
+    numpy 2d array
+        Image that contains edges after
+        substraction of erosed image from initial image
+    """
+    erosed_image = erosion(image, structural_element)
+    height, width = structural_element.shape
+    for i in range(height // 2):
+        erosed_image = delete(erosed_image, 0, axis=0)
+        erosed_image = delete(erosed_image, -1, axis=0)
+    for j in range(width // 2):
+        erosed_image = delete(erosed_image, 0, axis=1)
+        erosed_image = delete(erosed_image, -1, axis=1)
+    return image - erosed_image

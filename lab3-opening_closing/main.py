@@ -6,7 +6,13 @@ from numpy import full
 
 sys.path.insert(1, '../lab1-histogram')
 from utils import rgb2gray
-from morphological_operations import dilation, erosion, closing, opening
+from morphological_operations import (
+    dilation,
+    erosion,
+    closing,
+    opening,
+    get_edges,
+)
 
 if len(sys.argv) > 1:
     image_path = sys.argv[1]
@@ -46,9 +52,14 @@ opened_image = opening(input_image, s)
 ax_opened_image.set_title('Opened image')
 ax_opened_image.imshow(opened_image, cmap=plt.get_cmap('gray'))
 
+ax_edges = fig.add_subplot(spec[1, 2])
+edges = get_edges(input_image, s)
+ax_edges.set_title('Edges')
+ax_edges.imshow(edges, cmap=plt.get_cmap('gray'))
+
 for ax in [ax_original_image,
            ax_dilated_image, ax_erosed_image,
-           ax_closed_image, ax_opened_image]:
+           ax_closed_image, ax_opened_image, ax_edges]:
     ax.set_axis_off()
 
 plt.show()
