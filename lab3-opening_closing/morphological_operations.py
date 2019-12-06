@@ -194,10 +194,8 @@ def get_edges(image, structural_element):
     """
     erosed_image = erosion(image, structural_element)
     height, width = structural_element.shape
-    for i in range(height // 2):
-        erosed_image = delete(erosed_image, 0, axis=0)
+    for i in range(height - 1):
         erosed_image = delete(erosed_image, -1, axis=0)
-    for j in range(width // 2):
-        erosed_image = delete(erosed_image, 0, axis=1)
+    for j in range(width - 1):
         erosed_image = delete(erosed_image, -1, axis=1)
     return image - erosed_image
