@@ -1,4 +1,15 @@
-from numpy import exp
+from numpy import (
+    exp,
+    dot,
+    ix_,
+    average,
+    transpose,
+    tile,
+    repeat,
+    arange,
+    resize,
+)
+from operator import itemgetter
 
 
 def bilateral_filter(image, window_height, window_width, sigma_d, sigma_r):
@@ -25,20 +36,23 @@ def bilateral_filter(image, window_height, window_width, sigma_d, sigma_r):
     filtered_image = image.copy()
     for i in range(image.shape[0]):
         for j in range(image.shape[1]):
-            print(i, j)
-            numerator = 0.0
-            denominator = 0.0
-            for k in range(i - window_height, i + window_height + 1):
-                if k < 0 or k >= image.shape[0]:
-                    continue
-                for l in range(j - window_width, j + window_width + 1):
-                    if l < 0 or l >= image.shape[1]:
-                        continue
-                    w = exp(-((i - k) ** 2 + (j - l) ** 2) /
-                            (2 * sigma_d) -
-                            ((image[i, j] - image[k, l]) ** 2) /
-                            (2 * sigma_r))
-                    numerator += image[k, l] * w
-                    denominator += w
-            filtered_image[i, j] = numerator / denominator
+            print("Pricessing pixel ({}, {})".format(i, j))
+            # coordinates of window for x axis
+            window_x = arange(max(0, i - window_height),
+                              min(image.shape[0], i + window_height + 1))
+            # coordinates of window for y axis
+            window_y = arange(max(0, j - window_width),
+                              min(image.shape[1], j + window_width + 1))
+            # array of pairs <x, y> from <window_x, window_y>
+            pr = transpose([tile(window_x, len(window_y)),
+                            repeat(window_y, len(window_x))])
+            # part of image under filter
+            image_window = image[ix_(window_x, window_y)]
+
+            intensity_part = (image[i, j] - image_window) ** 2 / (2 * sigma_r)
+            distance_part = resize(
+                (([i, j] - pr) ** 2).sum(axis=1) / (2 * sigma_d),
+                (intensity_part.shape))
+            weights = exp(-distance_part - intensity_part)
+            filtered_image[i, j] = average(image_window, weights=weights)
     return filtered_image
