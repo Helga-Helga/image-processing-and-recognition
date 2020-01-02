@@ -12,6 +12,7 @@ pillow = "*"
 ipykernel = "*"
 jupyter = "*"
 pytest = "*"
+sklearn = "*"
 
 [requires]
 python_version = "3.6"
