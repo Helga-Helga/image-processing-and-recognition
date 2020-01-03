@@ -143,8 +143,8 @@ def sharpening(image, size):
     first_part = zeros((size, size))
     center_index = int((size - 1) / 2)
     first_part[center_index, center_index] = 1
-    sharpening_filter = first_part - box_filter(size)
-    return sharpening_filter, convolve(image, sharpening_filter)
+    sharpening_filter = first_part - box_filter(image, size)[0]
+    return sharpening_filter, image + convolve(image, sharpening_filter)
 
 
 def smoothing(image, size, r):
@@ -230,7 +230,7 @@ def contrast_enhancing_filter(image, size):
     contrast_enhancing_filter[0, center_index] = -1
     contrast_enhancing_filter[-1, center_index] = -1
     contrast_enhancing_filter[center_index, center_index] = 5
-    return contrast_enhancing_filter, convolve(
+    return contrast_enhancing_filter, image + convolve(
         image, contrast_enhancing_filter)
 
 
@@ -490,4 +490,4 @@ def laplacian_filter(image):
     laplacian_filter[2, 1] = 1
     laplacian_filter[1, 2] = 1
     laplacian_filter[1, 1] = -4
-    return laplacian_filter, convolve(image, laplacian_filter)
+    return laplacian_filter, image + convolve(image, laplacian_filter)
