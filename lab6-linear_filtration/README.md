@@ -6,7 +6,6 @@
 * [Technologies](#technologies)
 * [Launch](#launch)
 * [Example of the result](#example-of-result)
-* [Algorithm description](#algorithm-description)
 
 ## General info
 
