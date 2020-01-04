@@ -13,7 +13,6 @@ from pylab import (
     show,
     figure,
 )
-from matplotlib import animation
 
 
 def generate_circle():
