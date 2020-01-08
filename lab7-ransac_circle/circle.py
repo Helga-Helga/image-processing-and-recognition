@@ -5,6 +5,9 @@ from numpy import (
     cos,
     sin,
     argmax,
+    linalg,
+    array,
+    dot,
 )
 from pylab import (
     plot,
@@ -26,37 +29,52 @@ def generate_circle():
     return x, y
 
 
-def get_two_random_points(x, y):
-    point_indices = random.randint(low=0, high=len(x), size=2)
+def get_three_random_points(x, y):
+    point_indices = random.randint(low=0, high=len(x), size=3)
     points = [(x[index], y[index]) for index in point_indices]
     return points
 
 
-def find_h_and_k(random_points):
-    h = sum(list(zip(*random_points))[0]) / len(random_points)
-    k = sum(list(zip(*random_points))[1]) / len(random_points)
-    return h, k
+def estimate_model(random_points):
+    A = []
+    for point in random_points:
+        A.append([point[0] ** 2 + point[1] ** 2, point[0], point[1], 1])
+    A = array(A)
+
+    M1 = linalg.det(A[:, array([False, True, True, True])])
+    M2 = linalg.det(A[:, array([True, False, True, True])])
+    M3 = linalg.det(A[:, array([True, True, False, True])])
+    M4 = linalg.det(A[:, array([True, True, True, False])])
+
+    if M1 == 0:
+        return 0, 0, 0
+
+    x0 = 0.5 * M2 / M1
+    y0 = -0.5 * M3 / M1
+
+    r = (x0 ** 2 + y0 ** 2 + M4 / M1) ** 0.5
+    return x0, y0, r
 
 
-def distance_to_circle(x, y, h, k, r):
-    return abs((x - h) ** 2 + (y - k) ** 2 - r ** 2)
+def distance_to_circle(x, y, x0, y0, r):
+    return abs((x - x0) ** 2 + (y - y0) ** 2 - r ** 2)
 
 
-def vote_for_circle(circles, x, y, h, k, r, T):
+def vote_for_circle(circles, x, y, x0, y0, r, T):
     good_points = 0
     for x_, y_ in zip(x, y):
-        d = distance_to_circle(x_, y_, h, k, r)
+        d = distance_to_circle(x_, y_, x0, y0, r)
         if d < T:
             good_points += 1
-    circles.append((good_points, h, k, r))
+    circles.append((good_points, x0, y0, r))
     return circles
 
 
 def ransac_iteration(x, y, circles):
-    points = get_two_random_points(x, y)
-    h, k = find_h_and_k(points)
-    r = 2 * random.random_sample()
-    circles = vote_for_circle(circles, x, y, h, k, r, T)
+    points = get_three_random_points(x, y)
+    x0, y0, r = estimate_model(points)
+    if r is not 0:
+        circles = vote_for_circle(circles, x, y, x0, y0, r, T)
     return circles
 
 
@@ -65,20 +83,24 @@ if __name__ == "__main__":
     ax = fig.add_subplot(1, 1, 1)
     x, y = generate_circle()
     circles = []
-    T = 1
+    T = 0.5
     for _ in range(1000):
         ransac_iteration(x, y, circles)
 
     best_circle_index = argmax(list(zip(*circles))[0])
-    i, h, k, r = circles[best_circle_index]
+    i, x0, y0, r = circles[best_circle_index]
     print(i)
 
     t = linspace(0, 2 * pi, 100)
-    x_best = r * cos(t) + h
-    y_best = r * sin(t) + k
+    x_best = r * cos(t) + x0
+    y_best = r * sin(t) + y0
     plot(x_best, y_best, 'r')
 
-    plot(x, y, 'o')
+    for p_x, p_y in zip(x, y):
+        if distance_to_circle(p_x, p_y, x0, y0, r) < T:
+            plot(p_x, p_y, "bo")
+        else:
+            plot(p_x, p_y, "co")
     grid(True)
     gca().set_aspect('equal', adjustable='box')
     show()
