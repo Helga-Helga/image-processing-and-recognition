@@ -37,7 +37,7 @@ from activated pipenv environment.
 
 ## Example
 
-![Example of the result](example_of_result.jpeg)
+![Example of the result](images/example_of_result.jpeg)
 
 The left image is the original one.
 The right image is normalized with the given parameters,
