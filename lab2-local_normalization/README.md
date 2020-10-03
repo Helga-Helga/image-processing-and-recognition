@@ -1,4 +1,4 @@
-# Image binarization
+# Image normalization
 
 ## Table of contents
 
