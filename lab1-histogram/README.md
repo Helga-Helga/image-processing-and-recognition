@@ -40,7 +40,7 @@ from the `lab1-histogram` directory.
 
 The left image is the original one.
 The center image is binarized manually from the threshold value you pick in slider (it is represented as a red vertical line on the image histogram).
-The right image is binarized using Otsu's algorithm.
+The right image is binarized using Otsu's algorithm. The optimal threshold that was calculated in Otsu's algorithm is represented as a red vertical line on a slider.
 
 ## Histogram calculation
 
